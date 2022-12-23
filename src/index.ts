@@ -12,6 +12,38 @@ export class DialogueSmithAPI
         this.token = token;
     }
 
+    private async create_request_input_tone(end : string, input : string, tone : DialogueTone) : Promise<unknown>
+    {
+        let url = API_ENDPOINT + `${end}?input=${input}&tone=${tone}`;
+        let headers = generate_dialogue_smith_headers(this.token);
+
+        try
+        {
+            let response_raw = await request_simple(url, headers);
+            return JSON.parse(response_raw);
+        
+        } catch (e)
+        {
+            throw new Error(e);
+        }
+    }
+
+    private async create_request_input(end : string, input : string) : Promise<unknown>
+    {
+        let url = API_ENDPOINT + `${end}?input=${input}`;
+        let headers = generate_dialogue_smith_headers(this.token);
+
+        try
+        {
+            let response_raw = await request_simple(url, headers);
+            return JSON.parse(response_raw);
+        
+        } catch (e)
+        {
+            throw new Error(e);
+        }
+    }
+
     /**
      * Generate variation of provided input
      * @param input The input to generate variations for.
@@ -19,19 +51,7 @@ export class DialogueSmithAPI
      */
     async dialogue_variations(input: string, tone: DialogueTone = "Default"): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/variations?input=${input}&tone=${tone}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input_tone("/dialogue/variations", input, tone) as VariationResponse;
     }
 
     /**
@@ -40,19 +60,7 @@ export class DialogueSmithAPI
      */
     async dialogue_comment_from_game_state(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/comments-from-game-state?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e)
-            throw new Error();
-        }
+        return await this.create_request_input("/dialogue/comments-from-game-state", input) as VariationResponse
     }
 
     /**
@@ -62,19 +70,7 @@ export class DialogueSmithAPI
      */
     async dialogue_repeated_response(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/repeated-response?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/dialogue/repeated-response", input) as VariationResponse
     }
 
     /**
@@ -85,19 +81,7 @@ export class DialogueSmithAPI
      */
     async dialogue_npc_comments_from_action(input: string, tone: DialogueTone = "Default"): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/npc-comments-from-actions?input=${input}&tone=${tone}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input_tone("/dialogue/npc-comments-from-actions", input, tone) as VariationResponse;
     }
 
     /**
@@ -107,19 +91,7 @@ export class DialogueSmithAPI
      */
     async dialogue_drunk_response(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/drunk-responses?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/dialogue/drunk-responses", input) as VariationResponse
     }
 
     /**
@@ -129,19 +101,7 @@ export class DialogueSmithAPI
     */
     async dialogue_shakespearify(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/shakespearify?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/dialogue/shakespearify", input) as VariationResponse
     }
 
     /**
@@ -151,19 +111,7 @@ export class DialogueSmithAPI
     */
     async dialogue_companion_comments(input: string): Promise<PlayerCompanionResponse>
     {
-        let url = API_ENDPOINT + `/dialogue/player-companion-comments?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/dialogue/player-companion-comments", input) as PlayerCompanionResponse
     }
 
     /**
@@ -173,19 +121,7 @@ export class DialogueSmithAPI
     */
     async world_building_lore(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/world-building/lore?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/world-building/lore", input) as VariationResponse
     }
 
     /**
@@ -195,62 +131,26 @@ export class DialogueSmithAPI
     */
     async world_building_fantasy_character_sheet(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/world-building/fantasy-character-sheet?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/world-building/fantasy-character-sheet", input) as VariationResponse
     }
 
     /**
-     * Generates a fantasy character sheet using the provided input.
+     * Generates a sci-fi character sheet using the provided input.
      * @param input The input for generating a Sci-fi Character Sheet.
     ```Example : A busy fisherman, he also recently lost his tackle box.```
     */
     async world_building_scifi_character_sheet(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/world-building/scifi-character-sheet?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/world-building/scifi-character-sheet", input) as VariationResponse
     }
 
     /**
-     * Generates a fantasy character sheet using the provided input.
-     * @param input The input for generating a Sci-fi Character Sheet.
+     * Generates a western character sheet using the provided input.
+     * @param input The input for generating a Western Character Sheet.
     ```Example : A busy fisherman, he also recently lost his tackle box.```
     */
     async world_building_western_character_sheet(input: string): Promise<VariationResponse>
     {
-        let url = API_ENDPOINT + `/world-building/western-character-sheet?input=${input}`;
-        let headers = generate_dialogue_smith_headers(this.token);
-
-        let response_raw = await request_simple(url, headers);
-
-        try
-        {
-            return JSON.parse(response_raw);
-        } catch (e)
-        {
-            console.error(e);
-            throw new Error();
-        }
+        return await this.create_request_input("/world-building/western-character-sheet", input) as VariationResponse
     }
 }
