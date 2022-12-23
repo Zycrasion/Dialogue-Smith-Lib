@@ -1,4 +1,4 @@
-import { DialogueSmithAPI } from "./src/index";
+import { DialogueSmithAPI } from "../src/index";
 
 const key = "KEY";
 

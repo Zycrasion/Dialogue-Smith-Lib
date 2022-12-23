@@ -1,2 +1,9 @@
 {
+    "compilerOptions":
+    {
+        "declaration": true,
+        "outDir": "dist",
+        "rootDir": "src",
+    },
+    "exclude": ["tests/**/*","dist/**/*"]
 }
