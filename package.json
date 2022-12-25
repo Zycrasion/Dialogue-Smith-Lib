@@ -5,6 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "homepage": "https://github.com/Zycrasion/Dialogue-Smith-Lib/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zycrasion/Dialogue-Smith-Lib.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "prepublish": "tsc"
