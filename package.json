@@ -4,12 +4,17 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/Zycrasion/Dialogue-Smith-Lib/blob/master/README.md",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "prepublish": "tsc"
   },
-  "author": "",
+  "author": "Zycrasion",
   "license": "ISC",
+  "keywords": [
+    "API",
+    "AI"
+  ],
   "devDependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
