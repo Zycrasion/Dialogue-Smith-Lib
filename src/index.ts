@@ -1,6 +1,9 @@
 import { VariationResponse, DialogueTone, PlayerCompanionResponse } from "./ResponseTypes";
 import { generate_dialogue_smith_headers, HTTPHeaders, request_simple } from "./http_helper";
 
+import {Result , ResultLike, ResultIsError, ResultIsResponse} from "./ResponseTypes";
+export {Result, ResultLike, ResultIsError, ResultIsResponse};
+
 const API_ENDPOINT = "https://api.dialoguesmith.com/v1";
 
 export class DialogueSmithAPI
@@ -12,7 +15,7 @@ export class DialogueSmithAPI
         this.token = token;
     }
 
-    private async create_request_input_tone(end : string, input : string, tone : DialogueTone) : Promise<unknown>
+    private async create_request_input_tone(end: string, input: string, tone: DialogueTone): Promise<ResultLike<unknown>>
     {
         let url = API_ENDPOINT + `${end}?input=${input}&tone=${tone}`;
         let headers = generate_dialogue_smith_headers(this.token);
@@ -20,15 +23,15 @@ export class DialogueSmithAPI
         try
         {
             let response_raw = await request_simple(url, headers);
-            return JSON.parse(response_raw);
-        
+            return new Result<unknown>(false).setResult(JSON.parse(response_raw))
+
         } catch (e)
         {
-            throw new Error(e);
+            return new Result<unknown>(true).setErrorText(e);
         }
     }
 
-    private async create_request_input(end : string, input : string) : Promise<unknown>
+    private async create_request_input(end: string, input: string): Promise<unknown>
     {
         let url = API_ENDPOINT + `${end}?input=${input}`;
         let headers = generate_dialogue_smith_headers(this.token);
@@ -36,11 +39,11 @@ export class DialogueSmithAPI
         try
         {
             let response_raw = await request_simple(url, headers);
-            return JSON.parse(response_raw);
-        
+            return new Result<unknown>(false).setResult(JSON.parse(response_raw))
+
         } catch (e)
         {
-            throw new Error(e);
+            return new Result<unknown>(true).setErrorText(e);
         }
     }
 
@@ -49,18 +52,18 @@ export class DialogueSmithAPI
      * @param input The input to generate variations for.
      * @param tone The tone to use when generating variations for the provided text.
      */
-    async dialogue_variations(input: string, tone: DialogueTone = "Default"): Promise<VariationResponse>
+    async dialogue_variations(input: string, tone: DialogueTone = "Default"): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input_tone("/dialogue/variations", input, tone) as VariationResponse;
+        return await this.create_request_input_tone("/dialogue/variations", input, tone) as Result<VariationResponse>;
     }
 
     /**
      * Given information about the game state, generate dialogue the player character might say.
      * @param input The input describing the current game state to generate dialog for. ```Example : The player is standing in a deserted golden city. The streets are empty and the buildings are crumbling everywhere.```
      */
-    async dialogue_comment_from_game_state(input: string): Promise<VariationResponse>
+    async dialogue_comment_from_game_state(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/dialogue/comments-from-game-state", input) as VariationResponse
+        return await this.create_request_input("/dialogue/comments-from-game-state", input) as Result<VariationResponse>
     }
 
     /**
@@ -68,9 +71,9 @@ export class DialogueSmithAPI
      * @param input The input to generate variations for.
     ```Example : You must go now and speak to the man by the river, he has the answers you seek?```
      */
-    async dialogue_repeated_response(input: string): Promise<VariationResponse>
+    async dialogue_repeated_response(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/dialogue/repeated-response", input) as VariationResponse
+        return await this.create_request_input("/dialogue/repeated-response", input) as Result<VariationResponse>
     }
 
     /**
@@ -79,9 +82,9 @@ export class DialogueSmithAPI
     ```Example : The player is chopping a tree down with a dull axe.```
      * @param tone The tone to use when generating variations for the provided text.
      */
-    async dialogue_npc_comments_from_action(input: string, tone: DialogueTone = "Default"): Promise<VariationResponse>
+    async dialogue_npc_comments_from_action(input: string, tone: DialogueTone = "Default"): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input_tone("/dialogue/npc-comments-from-actions", input, tone) as VariationResponse;
+        return await this.create_request_input_tone("/dialogue/npc-comments-from-actions", input, tone) as Result<VariationResponse>;
     }
 
     /**
@@ -89,9 +92,9 @@ export class DialogueSmithAPI
      * @param input The question that you would like to have responded to by a drunk individual.
     ```Example : Do you know how to get to the castle?```
      */
-    async dialogue_drunk_response(input: string): Promise<VariationResponse>
+    async dialogue_drunk_response(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/dialogue/drunk-responses", input) as VariationResponse
+        return await this.create_request_input("/dialogue/drunk-responses", input) as Result<VariationResponse>
     }
 
     /**
@@ -99,9 +102,9 @@ export class DialogueSmithAPI
      * @param input The input you would like to "shakespearify".
     ```Example : Please, I need you to go find the box for me.```
     */
-    async dialogue_shakespearify(input: string): Promise<VariationResponse>
+    async dialogue_shakespearify(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/dialogue/shakespearify", input) as VariationResponse
+        return await this.create_request_input("/dialogue/shakespearify", input) as Result<VariationResponse>
     }
 
     /**
@@ -109,9 +112,9 @@ export class DialogueSmithAPI
      * @param input The input describing what is currently going on near the player.
     ```Example : The player is standing in a forest. There are countless aggressive turtles nearby.```
     */
-    async dialogue_companion_comments(input: string): Promise<PlayerCompanionResponse>
+    async dialogue_companion_comments(input: string): Promise<Result<PlayerCompanionResponse>>
     {
-        return await this.create_request_input("/dialogue/player-companion-comments", input) as PlayerCompanionResponse
+        return await this.create_request_input("/dialogue/player-companion-comments", input) as Result<PlayerCompanionResponse>
     }
 
     /**
@@ -119,9 +122,9 @@ export class DialogueSmithAPI
      * @param input The input you would like to generate lore for.
     ```Example : An old castle within a forest.```
     */
-    async world_building_lore(input: string): Promise<VariationResponse>
+    async world_building_lore(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/world-building/lore", input) as VariationResponse
+        return await this.create_request_input("/world-building/lore", input) as Result<VariationResponse>
     }
 
     /**
@@ -129,9 +132,9 @@ export class DialogueSmithAPI
      * @param input The input for generating a Fantasy Character Sheet.
     ```Example : A busy fisherman, he also recently lost his tackle box.```
     */
-    async world_building_fantasy_character_sheet(input: string): Promise<VariationResponse>
+    async world_building_fantasy_character_sheet(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/world-building/fantasy-character-sheet", input) as VariationResponse
+        return await this.create_request_input("/world-building/fantasy-character-sheet", input) as Result<VariationResponse>
     }
 
     /**
@@ -139,9 +142,9 @@ export class DialogueSmithAPI
      * @param input The input for generating a Sci-fi Character Sheet.
     ```Example : A busy fisherman, he also recently lost his tackle box.```
     */
-    async world_building_scifi_character_sheet(input: string): Promise<VariationResponse>
+    async world_building_scifi_character_sheet(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/world-building/scifi-character-sheet", input) as VariationResponse
+        return await this.create_request_input("/world-building/scifi-character-sheet", input) as Result<VariationResponse>
     }
 
     /**
@@ -149,8 +152,8 @@ export class DialogueSmithAPI
      * @param input The input for generating a Western Character Sheet.
     ```Example : A busy fisherman, he also recently lost his tackle box.```
     */
-    async world_building_western_character_sheet(input: string): Promise<VariationResponse>
+    async world_building_western_character_sheet(input: string): Promise<Result<VariationResponse>>
     {
-        return await this.create_request_input("/world-building/western-character-sheet", input) as VariationResponse
+        return await this.create_request_input("/world-building/western-character-sheet", input) as Result<VariationResponse>
     }
 }

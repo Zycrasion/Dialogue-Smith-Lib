@@ -13,7 +13,8 @@ export function request_simple(url: string, headers: HTTPHeaders): Promise<strin
         {
             let status_code = res.statusCode;
 
-            if (status_code !== 200) { res.resume(); reject("STATUS CODE NOT 200!"); }
+            if (status_code !== 200) { res.resume(); reject("STATUS CODE NOT 200! RESPONSE HEADERS ARE ".concat(JSON.stringify(res.headers), "\n", 
+            "The most common cause of thise is due to not inputting your api-key correctly")); }
 
             let raw_data = "";
             res.on("data", (chunk) =>
