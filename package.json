@@ -10,7 +10,7 @@
     "url": "https://github.com/Zycrasion/Dialogue-Smith-Lib.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "npx ts-node-esm ./tests/test.ts && exit 0",
     "prepublish": "tsc"
   },
   "author": "Zycrasion",
