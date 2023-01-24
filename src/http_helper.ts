@@ -1,5 +1,5 @@
 import * as https from "https";
-
+import {URL} from "node:url"
 export interface HTTPHeaders
 {
     [key: string]: string;
@@ -9,6 +9,7 @@ export function request_simple(url: string, headers: HTTPHeaders): Promise<strin
 {
     return new Promise<string>((resolve, reject) =>
     {
+        url = new URL(url).toString();
         https.get(url, { "headers": headers }, res =>
         {
             let status_code = res.statusCode;

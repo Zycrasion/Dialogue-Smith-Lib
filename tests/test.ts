@@ -7,6 +7,66 @@ let instance = new DialogueSmithAPI(key);
 
 async function main()
 {
+
+    let find_closest_match = await instance.dialogue_find_closest_match(
+        ["Can i have a look at your tools", "Got any Quests for me?", "Goodbye"],
+        "What are your finest tools?"
+    );
+    if (ResultIsError(find_closest_match))
+    {
+        console.error("Error in find closest match:");
+        console.error(find_closest_match.errorText);
+    } else if (ResultIsResponse(find_closest_match))
+    {
+        for (let dialogue of find_closest_match.result.dialogue)
+        {
+            console.log(dialogue);
+        }
+        console.log("Remaining Tokens = ", find_closest_match.result.remaining_tokens);
+    }
+
+    let list_continue = await instance.dialogue_list_continuation(
+        "tools",
+        [
+            "Hoe",
+            "Axe",
+            "Enchanted Sword"
+        ]
+    );
+    if (ResultIsError(list_continue))
+    {
+        console.error("Error in list continue:");
+        console.error(list_continue.errorText);
+    } else if (ResultIsResponse(list_continue))
+    {
+        for (let dialogue of list_continue.result.dialogue)
+        {
+            console.log(dialogue);
+        }
+        console.log("Remaining Tokens = ", list_continue.result.remaining_tokens);
+    }
+
+    let contract_generation = await instance.dialogue_contract_gen(
+        "Nazeem",
+        "Whiterun",
+        "Dawnstar",
+        "The Jarl",
+        "10 thousand septims",
+        false
+    );
+    if (ResultIsError(contract_generation))
+    {
+        console.error("Error in contract_generation:");
+        console.error(contract_generation.errorText);
+    } else if (ResultIsResponse(contract_generation))
+    {
+        for (let dialogue of contract_generation.result.dialogue)
+        {
+            console.log(dialogue);
+        }
+        console.log("Remaining Tokens = ", contract_generation.result.remaining_tokens);
+    }
+
     let scifi_character_sheet = await instance.world_building_scifi_character_sheet(
         "Zycrasion, She is the developer of the package"
     );
